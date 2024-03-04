@@ -1,15 +1,13 @@
-import React from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import MapComponent from './Map';
+import React from "react";
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View } from "react-native";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import MapComponent from "./Map";
 
 function App() {
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <MapComponent/>
-      <Text>EOP</Text>
+      <MapComponent />
       <StatusBar style="auto" />
     </View>
   );

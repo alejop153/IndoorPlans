@@ -15,12 +15,14 @@ function MapComponent() {
     [finalYCoord, finalXCoord],
   ];
 
-  const imageBounds2 = [
-    [finalYCoord - 254, 679],
-    [finalYCoord - 146, 877],
+  const zones = [
+    [
+      [finalYCoord - 254, 679],
+      [finalYCoord - 146, 877],
+    ],
   ];
 
-  const handleRectangleClick = () => {
+  const onClickedZone = () => {
     alert("Rectangle clicked!");
   };
 
@@ -29,23 +31,25 @@ function MapComponent() {
       crs={L.CRS.Simple}
       center={[finalYCoord / 2, finalXCoord / 2]}
       zoom={0}
+      maxZoom={1}
       style={{ height: "100%", width: "100%", backgroundColor: "black" }}
       attributionControl={false}
     >
       <ImageOverlay url={imageUrl} bounds={imageBounds} />
-
-      {/* <ImageOverlay
-        url={
-          "https://as2.ftcdn.net/v2/jpg/05/64/68/71/1000_F_564687131_3oKATULZmb0EbdWu4CSZgtdJZSfVHOjE.jpg"
-        }
-        bounds={imageBounds2}
-      /> */}
-      <Rectangle
-        fillColor="red"
-        stroke={false}
-        bounds={imageBounds2}
-        eventHandlers={{ click: handleRectangleClick }}
-      />
+      {zones.map((zone, index) => {
+        return (
+          <ImageOverlay
+            key={index}
+            url={
+              "https://www.clker.com/cliparts/9/9/c/8/q/7/grey-rounded-rectangle-gery-rounded-rectangle.svg.hi.png"
+            }
+            opacity={0.5}
+            bounds={zone}
+            interactive={true}
+            eventHandlers={{ click: onClickedZone }}
+          />
+        );
+      })}
     </MapContainer>
   );
 }

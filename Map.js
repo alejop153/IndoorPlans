@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { MapContainer, ImageOverlay, Polygon, Circle, FeatureGroup } from "react-leaflet";
-import { EditControl } from "react-leaflet-draw";
+import React, {useEffect, useState} from "react";
+import {Circle, FeatureGroup, ImageOverlay, MapContainer, Polygon} from "react-leaflet";
+import {EditControl} from "react-leaflet-draw";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
-import { Image } from "react-native";
-import { FaDrawPolygon, FaRegSquare, FaRegCircle } from "react-icons/fa";
+import {Image} from "react-native";
+import {FaDrawPolygon, FaRegCircle, FaRegSquare} from "react-icons/fa";
 
 const DrawControls = ({ onCreated }) => {
   const drawingOptions = {
@@ -36,7 +36,12 @@ const DrawControls = ({ onCreated }) => {
     <EditControl
       position="topright"
       onCreated={onCreated}
-      draw={drawingOptions}
+      draw={
+        {
+          circlemarker: false,
+          marker: false,
+          polyline: false,
+        }}
     />
   );
 };

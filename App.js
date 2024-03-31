@@ -1,13 +1,16 @@
 import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import MapComponent from "./Map";
 
 function App() {
+  const cHeight = 700;
+  const cWidth = 1500;
   return (
     <View style={styles.container}>
-      <MapComponent />
+      <View style={{ height: cHeight, width: cWidth }}>
+        <MapComponent cHeight={cHeight} cWidth={cWidth} />
+      </View>
       <StatusBar style="auto" />
     </View>
   );

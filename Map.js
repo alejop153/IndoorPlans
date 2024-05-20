@@ -6,6 +6,8 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import {Image} from "react-native";
 import {FaDrawPolygon, FaRegCircle, FaRegSquare} from "react-icons/fa";
+import { Button } from "react-native";
+
 
 const DrawControls = ({ onCreated }) => {
   const drawingOptions = {
@@ -41,6 +43,9 @@ const DrawControls = ({ onCreated }) => {
           circlemarker: false,
           marker: false,
           polyline: false,
+          circle: false,
+          polygon: false,
+
         }}
     />
   );
@@ -49,6 +54,9 @@ const DrawControls = ({ onCreated }) => {
 function MapComponent({ cHeight, cWidth }) {
   const [dimensions, setDimensions] = useState({});
   const [factor, setFactor] = useState(1);
+
+  const [zonesData, setZonesData] = useState([]);
+
 
   const imageUrl = "https://thumb.bibliocad.com/images/content/00020000/5000/25945.jpg";
 
@@ -71,28 +79,57 @@ function MapComponent({ cHeight, cWidth }) {
   ];
 
   const zones = [
-    [
-      [dimensions.height - 254, 679],
-      [dimensions.height - 146, 679],
-      [dimensions.height - 146, 877],
-      [dimensions.height - 254, 877],
-    ],
+    // [
+    //   [dimensions.height - 254, 679],
+    //   [dimensions.height - 146, 679],
+    //   [dimensions.height - 146, 877],
+    //   [dimensions.height - 254, 877],
+    // ],
   ];
 
   const circles = [
-    {
-      center: [dimensions.height - 372, 659],
-      radius: 20,
-    },
+    // {
+    //   center: [dimensions.height - 372, 659],
+    //   radius: 20,
+    // },
   ];
 
   const onClickedZone = () => {
     alert("Rectangle clicked!");
   };
 
-  const _created = (e) => {
+  const _created = async (e) => {
     const { layerType, layer } = e;
-    console.log(`Created ${layerType} with coordinates: ${layer.getLatLngs()}`);
+    const zoneName = window.prompt("Please enter the name of the zone");
+    if (zoneName === null || zoneName === "") {
+      console.log("User cancelled the prompt");
+    } else {
+      const coords = layer.getLatLngs()[0].map(({ lat, lng }) => [lat, lng]);
+      console.log(`Created ${layerType} named ${zoneName} with coordinates: ${coords}`);
+      setZonesData((prevZones) => ({
+        ...prevZones,
+        [zoneName]: coords,
+      }));
+    }
+  };
+
+  const uploadZonesData = async () => {
+    const response = await fetch('https://webhook.site/8933f598-5aae-425c-9711-f4849cf33b6d', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(zonesData),
+      mode: 'no-cors',
+    });
+    
+    alert('Data uploaded')
+  
+    // if (response.ok) {
+    //   alert('Data uploaded successfully');
+    // } else {
+    //   console.error('Failed to upload data');
+    // }
   };
 
   zones.forEach((zone) => multiplyPositions(zone, factor));
@@ -100,6 +137,7 @@ function MapComponent({ cHeight, cWidth }) {
 
   return (
     dimensions.height != null && (
+      <>
       <MapContainer
         crs={L.CRS.Simple}
         center={[imageBounds[1][0] / 2, imageBounds[1][1] / 2]}
@@ -121,7 +159,7 @@ function MapComponent({ cHeight, cWidth }) {
             }}
           />
         </FeatureGroup>
-        {zones.map((zone, index) => (
+        {zones?.map((zone, index) => (
           <Polygon
             key={index}
             positions={zone}
@@ -132,7 +170,7 @@ function MapComponent({ cHeight, cWidth }) {
             eventHandlers={{ click: onClickedZone }}
           />
         ))}
-        {circles.map((circle, index) => (
+        {circles?.map((circle, index) => (
           <Circle
             key={index}
             center={circle.center}
@@ -145,6 +183,11 @@ function MapComponent({ cHeight, cWidth }) {
           />
         ))}
       </MapContainer>
+              <Button title="Upload zones data" onPress={uploadZonesData} />
+              {/* <pre style={{ maxHeight: '200px', overflow: 'auto' }}>{JSON.stringify(zonesData, null, 2)}</pre> */}
+
+              </>
+
     )
   );
 }

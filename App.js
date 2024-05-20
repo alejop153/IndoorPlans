@@ -4,8 +4,8 @@ import { StyleSheet, Text, View } from "react-native";
 import MapComponent from "./Map";
 
 function App() {
-  const cHeight = 700;
-  const cWidth = 1500;
+  const cHeight = 751;
+  const cWidth = 1000;
   return (
     <View style={styles.container}>
       <View style={{ height: cHeight, width: cWidth }}>

@@ -30,23 +30,40 @@ function MapComponent({ cHeight, cWidth }) {
     [dimensions.height * factor, dimensions.width * factor],
   ];
 
+  const handleZoneClick = (zone) => {
+    if (zone.isReserved) {
+      alert("This zone is not available.");
+    } else {
+      const confirmReservation = window.confirm(
+        "Do you want to reserve this zone?"
+      );
+      if (confirmReservation) {
+        console.log(`API request to reserve zone ${zone.id}`);
+        // Here you would make your API request to reserve the zone.
+      }
+    }
+  };
+
   // ------------------------------------------
 
   var zones = [
-    [
-      [dimensions.height - 254, 679],
-      [dimensions.height - 146, 679],
-      [dimensions.height - 146, 877],
-      [dimensions.height - 254, 877],
-    ],
+    {
+      id: 1,
+      name: "Zone 1",
+      coords: [
+        [dimensions.height - 254, 679],
+        [dimensions.height - 146, 679],
+        [dimensions.height - 146, 877],
+        [dimensions.height - 254, 877],
+      ],
+      type: "rectangle",
+      isReserved : false
+
+    },
+    // Add more zones here...
   ];
 
-  var circles = [
-    {
-      center: [dimensions.height - 372, 659],
-      radius: 20,
-    },
-  ];
+
 
   const onClickedZone = () => {
     alert("Rectangle clicked!");
@@ -55,7 +72,6 @@ function MapComponent({ cHeight, cWidth }) {
   // ------------------------------------------
 
   zones = multiplyPositions(zones, factor);
-  circles = multiplyCenters(circles, factor);
 
   return (
     dimensions.height != null && (
@@ -75,39 +91,29 @@ function MapComponent({ cHeight, cWidth }) {
         {zones.map((zone, index) => {
           return (
             <Polygon
-              key={index}
-              positions={zone}
+              key={zone.id}
+              positions={zone.coords}
               stroke={false}
               pathOptions={{
                 fillOpacity: 0.2,
               }}
-              eventHandlers={{ click: onClickedZone }}
+              eventHandlers={{ click: () => handleZoneClick(zone) }}
             />
           );
         })}
-        {circles.map((circle, index) => {
-          return (
-            <Circle
-              key={index}
-              center={circle.center}
-              radius={circle.radius}
-              stroke={false}
-              pathOptions={{
-                fillOpacity: 0.2,
-              }}
-              eventHandlers={{ click: onClickedZone }}
-            />
-          );
-        })}
+
       </MapContainer>
     )
   );
 }
 
 function multiplyPositions(zones, factor) {
-  return zones.map((zone) =>
-    zone.map((position) => position.map((coordinate) => coordinate * factor))
-  );
+  return zones.map((zone) => ({
+    ...zone,
+    coords: zone.coords.map((position) =>
+      position.map((coordinate) => coordinate * factor)
+    ),
+  }));
 }
 
 function multiplyCenters(circles, factor) {
